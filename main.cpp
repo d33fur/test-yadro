@@ -105,12 +105,29 @@ class cyberclub
 {
   public:
     cyberclub(const std::vector<std::string>& v) :
-      numOfTables_(std::stoi(v[0])),
       worktime_({v[1].substr(0, 5), v[1].substr(6, 11)}),
       hourPrice_(std::stoi(v[2])) 
     {
+      if(!isNumber(v[0]))
+      {
+        std::cout << v[0] << std::endl;
+        throw std::runtime_error("err");
+      }
+      else if(std::stoi(v[0]) <= 0)
+      {
+        std::cout << v[0] << std::endl;
+        throw std::runtime_error("err");
+      }
+      else
+      {
+        numOfTables_ = std::stoi(v[0]);
+      }
     }
 
+    bool isNumber(const std::string &s) 
+    {
+      return !s.empty() && std::all_of(s.begin(), s.end(), ::isdigit);
+    }
 
     bool isNameValid(const std::string& line) 
     {

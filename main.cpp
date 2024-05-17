@@ -104,16 +104,10 @@ class eventType
 class cyberclub 
 {
   public:
-    cyberclub(const std::vector<std::string>& v) :
-      worktime_({v[1].substr(0, 5), v[1].substr(6, 11)}),
-      hourPrice_(std::stoi(v[2])) 
+    cyberclub(const std::vector<std::string>& v)
     {
-      if(!isNumber(v[0]))
-      {
-        std::cout << v[0] << std::endl;
-        throw std::runtime_error("err");
-      }
-      else if(std::stoi(v[0]) <= 0)
+      if(!isNumber(v[0])
+      || std::stoi(v[0]) <= 0)
       {
         std::cout << v[0] << std::endl;
         throw std::runtime_error("err");
@@ -121,6 +115,42 @@ class cyberclub
       else
       {
         numOfTables_ = std::stoi(v[0]);
+      }
+
+      if(v[1].length() != 11  
+      || v[1][5] != ' '
+      || v[1][2] != ':'
+      || v[1][8] != ':'
+      || !isNumber(v[1].substr(0, 2)) 
+      || !isNumber(v[1].substr(3, 2))
+      || !isNumber(v[1].substr(6, 2))
+      || !isNumber(v[1].substr(9, 11))
+      || std::stoi(v[1].substr(0, 2)) > 23
+      || std::stoi(v[1].substr(6, 2)) > 23
+      || std::stoi(v[1].substr(3, 2)) > 59
+      || std::stoi(v[1].substr(9, 11)) > 59)
+      {
+        std::cout << v[1] << std::endl;
+        throw std::runtime_error("err");
+      }
+      else
+      {
+        worktime_ = {v[1].substr(0, 5), v[1].substr(6, 11)};
+      }
+
+      if(!isNumber(v[2]) || std::stoi(v[2]) <= 0)
+      {
+        std::cout << v[2] << std::endl;
+        throw std::runtime_error("err");   
+      }
+      else
+      {
+        hourPrice_ = std::stoi(v[2]); 
+      }
+
+      for(int i = 0; i < numOfTables_; i++)
+      {
+        tables_[i+1];
       }
     }
 
@@ -181,7 +211,7 @@ class cyberclub
         && v[1] != "2" 
         && v[1] != "3" 
         && v[1] != "4"
-        || (v[1] == "2" && (std::stoi(v[3]) > numOfTables_ || std::stoi(v[3]) < 1)))
+        || (v[1] == "2" && (!isNumber(v[3]) || std::stoi(v[3]) > numOfTables_ || std::stoi(v[3]) < 1)))
       {
         err(line);
         return 1;
@@ -292,7 +322,7 @@ class cyberclub
       else if(clientsQ_.size() > numOfTables_)
       {
         auto it = clients_.find(e.clientName_);
-        clients_.erase(it); // сомнительно
+        clients_.erase(it);
         std::cout << e.time_.str_ << " 11 " << e.clientName_ << std::endl;
       }
       else
@@ -337,11 +367,6 @@ class cyberclub
     void dayEnd()
     {
       std::vector<std::string> v;
-      while(!clientsQ_.empty())
-      {
-        v.push_back(clientsQ_.front());
-        clientsQ_.pop();
-      }
 
       for(const auto& c : clients_)
       {
@@ -433,7 +458,7 @@ int main(int argc, char* argv[])
     file.close();
   }
   catch(const std::exception& e) {
-    std::cerr << e.what() << std::endl;
+    // std::cerr << e.what() << std::endl;
     return 1;
   }
   return 0;

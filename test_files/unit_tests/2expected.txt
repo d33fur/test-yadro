@@ -1,0 +1,11 @@
+09:00
+08:48 1 client1
+08:48 13 NotOpenYet
+08:49 1 client1
+08:49 13 NotOpenYet
+08:50 1 client1
+08:50 13 NotOpenYet
+08:55 1 client2
+08:55 13 NotOpenYet
+19:00
+1 0 00:00
